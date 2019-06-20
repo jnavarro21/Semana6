@@ -12,12 +12,14 @@ import com.example.alumno.myapplication.helpers.Callback;
 import com.example.alumno.myapplication.helpers.MonitorObservable;
 import com.example.alumno.myapplication.helpers.ObserverBind;
 import com.example.alumno.myapplication.models.Cliente;
+import com.example.alumno.myapplication.presenters.MainPresenter;
 
 import java.util.Observable;
 import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity {
     Button btnEdad;
+    MainPresenter mainPresenter;
     MonitorObservable monitorObservable;
     ObserverBind observerBind;
     Cliente clienteObject;
@@ -28,26 +30,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         clienteObject = new Cliente();
         clienteObject.setYear_old(19);
-        /* Aqui bindeamos un objeto con un observador */
-        monitorObservable = new MonitorObservable(clienteObject);
-        observerBind = new ObserverBind();
-        observerBind.setCallback(new Callback(){
-            @Override
-            public void doThis(Observable o, Object x) {
-                //Todo lo que yo quiera
-                Log.v("bichito", "xxx");
-                Toast.makeText(MainActivity.this, "Vamos..!!!", Toast.LENGTH_SHORT).show();
-                btnEdad.setBackgroundColor(Color.parseColor("#bc647d"));
-            }
-        });
-        monitorObservable.addObserver(observerBind);
-
         btnEdad=(Button)findViewById(R.id.btnEdad);
+            mainPresenter = new MainPresenter(this, clienteObject, btnEdad);
+
+
         btnEdad.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 clienteObject.setYear_old(clienteObject.getYear_old() +1);
-                monitorObservable.setWachedValue(clienteObject);
+                mainPresenter.monitorObservable.setWachedValue(clienteObject);
             }
         });
     }
